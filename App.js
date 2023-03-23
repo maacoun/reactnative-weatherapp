@@ -1,20 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+// SCREENS
+import Home from "./screens/HomeScreen";
+import Weather from "./screens/WeatherScreen";
+import Analytics from "./screens/AnalyticsScreen";
+export const SCREEN_HOME = "Home"
+export const SCREEN_WEATHER = "Weather"
+export const SCREEN_ANALYTICS = "Analytics"
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            switch (route.name) {
+              case SCREEN_HOME : iconName = "home-sharp"; break;
+              case SCREEN_WEATHER : iconName = "cloud-outline"; break;
+              case SCREEN_ANALYTICS : iconName = "analytics-outline"; break;
+              default: iconName = "information-circle";
+            }
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+      >
+        <Tab.Screen name={SCREEN_HOME} component={Home} />
+        <Tab.Screen name={SCREEN_WEATHER} component={Weather} />
+        <Tab.Screen name={SCREEN_ANALYTICS} component={Analytics} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

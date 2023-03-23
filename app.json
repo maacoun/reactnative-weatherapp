@@ -3,11 +3,11 @@
     "name": "rn-simpleweather",
     "slug": "rn-simpleweather",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "orientation": "default",
+    "icon": "./assets/sun-cloud.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/sun.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

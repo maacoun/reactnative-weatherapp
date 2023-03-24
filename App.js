@@ -24,9 +24,15 @@ export default function App() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             switch (route.name) {
-              case SCREEN_HOME : iconName = "home-sharp"; break;
-              case SCREEN_WEATHER : iconName = "cloud-outline"; break;
-              case SCREEN_ANALYTICS : iconName = "analytics-outline"; break;
+              case SCREEN_HOME:
+                iconName = focused ? "home" : "home-outline";
+                break;
+              case SCREEN_WEATHER:
+                iconName = focused ? "cloud" : "cloud-outline";
+                break;
+              case SCREEN_ANALYTICS:
+                iconName = focused ? "analytics" : "analytics-outline";
+                break;
               default: iconName = "information-circle";
             }
             // You can return any component that you like here!

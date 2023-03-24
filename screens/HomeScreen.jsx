@@ -1,15 +1,22 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export const HomeScreen = () => {
+export const HomeScreen = ({navigation}) => {
+  const [vstupPocasko, setVstupPocasko] = useState("")
+
+  const handleNavigationInput = () => {
+    console.log(vstupPocasko);
+    navigation.navigate("Weather", { weatherInput: vstupPocasko })
+  }
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={require('../assets/thunderstorm.png')} style={styles.logo} />
             <Text style={styles.appName}>Simpleweather</Text>
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="Type in your location" />
-                <TouchableOpacity style={styles.icon}>
+                <TextInput style={styles.input} placeholder="Type in your location" value={vstupPocasko} onChangeText={text => setVstupPocasko(text)} />
+                <TouchableOpacity style={styles.icon} onPress={handleNavigationInput}>
                 <Ionicons name="search-outline" size={24} color="#AAAAAA" />
                 </TouchableOpacity>
             </View>

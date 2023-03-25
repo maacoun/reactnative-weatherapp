@@ -20,17 +20,18 @@ export default ForecastCard;
 
 const styles = StyleSheet.create({
     card: {
-        width: 150,
-        height: 180,
+        width: 170,
+        height: 170,
         backgroundColor: '#f5f5f5',
         borderRadius: 8,
-        marginRight: 16,
+        margin: 10,
         alignItems: 'center',
         justifyContent: 'center',
       },
       cardTitle: {
         fontSize: 18,
         fontWeight: 'bold',
+        textAlign: 'center',
       },
       icon: {
         width: 50,

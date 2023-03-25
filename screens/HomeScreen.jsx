@@ -31,7 +31,6 @@ export const HomeScreen = ({navigation}) => {
   useEffect(() => {
     if (location) {
       const { latitude, longitude } = location.coords;
-
       navigation.navigate('Weather', { weatherInput: `${latitude},${longitude}` });
     }
   }, [location]);

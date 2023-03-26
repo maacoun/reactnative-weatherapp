@@ -3,9 +3,13 @@ import { Text, View, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {useDataContext} from "../providers/SettingsProvider";
+import lightTheme from '../styles/lightTheme';
+import darkTheme from '../styles/darkTheme';
 
 export const TempViewer = ({current, forecast}) => {
     const [settings, setSettings] = useDataContext();
+    const styles = settings.theme === 'light' ? lightTheme : darkTheme;
+
     if (settings.units === "metric") {
         return (
             <View style={styles.tempdiv}>
@@ -26,19 +30,3 @@ export const TempViewer = ({current, forecast}) => {
 }
 
 export default TempViewer;
-
-const styles = StyleSheet.create({
-    tempdiv: {
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 10,
-    },
-    temperature: {
-        fontSize: 64,
-        fontWeight: "bold",
-    },
-    text: {
-        fontSize: 16,
-    },
-    
-});

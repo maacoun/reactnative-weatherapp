@@ -7,7 +7,8 @@ import {TempViewer} from "../components/TempViewer";
 import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useDataContext} from "../providers/SettingsProvider";
-
+import lightTheme from '../styles/lightTheme';
+import darkTheme from '../styles/darkTheme';
 
 export const WeatherScreen = ({route}) => {
   const [settings, setSettings] = useDataContext();
@@ -19,6 +20,9 @@ export const WeatherScreen = ({route}) => {
   const [alerts, setAlerts] = useState([{}]);
 
   const [loading, setLoading] = useState(true);
+  
+  const styles = settings.theme === 'light' ? lightTheme : darkTheme;
+  console.log(styles);
 
   const apikey = "dc501297718e46d6b1593532232403";
 
@@ -64,21 +68,21 @@ export const WeatherScreen = ({route}) => {
   //Koleso nacitani
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor : settings.theme === "light" ? "#FFFFFF" : "#1C1C1E" }}>
         {loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
       </View>
     );
   }
  
   return (
-    <ScrollView vertical={true} contentContainerStyle={styles.container}>
+    <ScrollView vertical={true} contentContainerStyle={styles.weatherScreenContainer}>
       <View style={styles.centre}>
         <View style={styles.wrappingPanel}>
           <Text style={styles.place}>{location.name}</Text>
           <TempViewer current={current} forecast={forecast} />
           <Image source={{ uri: 'https:' + current.condition.icon.substring(2) }} style={styles.pictogram} />
           <Text style={styles.description}>{current.condition.text}</Text>
-          <Text style={styles.time}>Last Updated: {moment(current.last_updated).format('HH:mm')}</Text>
+          <Text style={styles.time}>Last updated: {moment(current.last_updated).format('HH:mm')}</Text>
           <View style={styles.buttons}>
             {settings.defaultHometown == "" && settings.defaultHometown != location.name ? (
               <TouchableOpacity style={styles.button} onPress={() => setSettings({...settings, defaultHometown: location.name})}>
@@ -195,133 +199,6 @@ export const WeatherScreen = ({route}) => {
       </View>
     </ScrollView>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    //backgroundColor: 'blue',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    flexGrow: 1,
-  },
-  centre : {
-    //backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  astro : {
-    //backgroundColor: 'yellow',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  airquality : {
-    //backgroundColor: 'pink',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  alerts : {
-    //backgroundColor: 'orange',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  bottom : {
-    //backgroundColor: 'green',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  },
-  pictogram: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    resizeMode: 'contain',
-  },
-  place: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  separator: {
-    marginVertical: 10,
-    height: 1,
-    width: '80%',
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  ionicon: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  time: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  tempdiv: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  others: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  airqualityvalues: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: '75%',
-    flexWrap: 'wrap',
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '75%',
-    flexWrap: 'wrap',
-  },
-  button: {
-    backgroundColor: '#1E90FF',
-    padding: 10,
-    borderRadius: 10,
-    margin: 5,
-  },
-  wrappingPanel: {
-    width: '95%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    margin: 5,
-    padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  wrappingPanelText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
-
-  
+};  
 
 export default WeatherScreen;

@@ -36,6 +36,8 @@ const SettingsProvider = ({ children }) => {
     const saveSettings = async () => {
       try {
         await AsyncStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+        console.log('Settings saved to storage');
+        console.log(settings);
       } catch (error) {
         console.error('Error saving settings to storage:', error);
       }

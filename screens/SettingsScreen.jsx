@@ -3,9 +3,12 @@ import { View, Text, Switch, StyleSheet, TextInput, KeyboardAvoidingView, Platfo
 import { ScrollView } from 'react-native-gesture-handler';
 import {useDataContext} from "../providers/SettingsProvider";
 import * as Location from 'expo-location';
+import lightTheme from '../styles/lightTheme';
+import darkTheme from '../styles/darkTheme';
 
 const SettingsScreen = () => {
   const [settings, setSettings] = useDataContext();
+  const styles = settings.theme === 'light' ? lightTheme : darkTheme;
 
   const cancelGPSPermission = async () => {
     await Location.hasServicesEnabledAsync();
@@ -29,7 +32,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.settingsScreenContainer}>
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
        <View style={styles.section}>
         <Text style={styles.sectionTitle}>Selected unit</Text>
@@ -37,7 +40,7 @@ const SettingsScreen = () => {
           {settings.units === 'metric' ? 'Metric' : 'Imperial'}
         </Text>
         <View style={styles.sectionRow}>
-          <Text>Imperial</Text>
+          <Text style={styles.sectionSmallText}>Imperial</Text>
           <Switch
             value={settings.units === 'metric'}
             onValueChange={() =>
@@ -47,14 +50,14 @@ const SettingsScreen = () => {
               })
             }
           />
-          <Text>Metric</Text>
+          <Text style={styles.sectionSmallText}>Metric</Text>
         </View>
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Selected theme</Text>
         <Text style={styles.sectionSubtitle}>{settings.theme === 'light' ? 'Light' : 'Dark'}</Text>
         <View style={styles.sectionRow}>
-          <Text>Dark</Text>
+          <Text style={styles.sectionSmallText}>Dark</Text>
           <Switch
             value={settings.theme === 'light'}
             onValueChange={() =>
@@ -64,7 +67,7 @@ const SettingsScreen = () => {
               })
             }
           />
-          <Text>Light</Text>
+          <Text style={styles.sectionSmallText}>Light</Text>
         </View>
       </View>
       {/* <View style={styles.section}>
@@ -91,7 +94,7 @@ const SettingsScreen = () => {
         <View style={styles.sectionRow}>
           <Text style={styles.sectionSubtitle}>{settings.defaultHometown}</Text>
           <TextInput
-            style={styles.textInput}
+            style={styles.sectionTextInput}
             value={settings.defaultHometown}
             onChangeText={(text) =>
               setSettings({
@@ -118,27 +121,5 @@ const SettingsScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  sectionRow: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  sectionSubtitle: {
-    fontSize: 16,
-    color: '#777',
-  },
-});
 
 export default SettingsScreen;

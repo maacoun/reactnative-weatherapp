@@ -3,6 +3,9 @@ import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
 import {useDataContext} from "../providers/SettingsProvider";
+import lightTheme from '../styles/lightTheme';
+import darkTheme from '../styles/darkTheme';
+
 
 export const HomeScreen = ({navigation}) => {
   const [settings, setSettings] = useDataContext();
@@ -11,6 +14,8 @@ export const HomeScreen = ({navigation}) => {
   const [location, setLocation] = useState(null);
   const [geocoded, setGeocoded] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  const styles = settings.theme === 'light' ? lightTheme : darkTheme;
 
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync({
@@ -29,8 +34,8 @@ export const HomeScreen = ({navigation}) => {
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
 
-    const geocoded = await Location.reverseGeocodeAsync(location.coords);
-    setGeocoded(geocoded);
+    // const geocoded = await Location.reverseGeocodeAsync(location.coords);
+    // setGeocoded(geocoded);
   }
 
   const handleNavigationInput = () => {
@@ -45,13 +50,17 @@ export const HomeScreen = ({navigation}) => {
     }
   }, [location]);
 
+  useEffect(() => {
+    console.log("changed")
+  }, [settings.theme])
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={require('../assets/thunderstorm.png')} style={styles.logo} />
             <Text style={styles.appName}>Simpleweather</Text>
             <View style={styles.inputContainer}>
                 <TextInput style={styles.input} placeholder="Type in your location" value={vstupPocasko} onChangeText={text => setVstupPocasko(text)} onSubmitEditing={handleNavigationInput}/>
-                <TouchableOpacity style={styles.icon} onPress={handleNavigationInput}><Ionicons name="search-outline" size={24} color="#00008B" /></TouchableOpacity>
+                <TouchableOpacity onPress={handleNavigationInput}><Ionicons name="search-outline" size={24} style={styles.inputContainerIcon} /></TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.gpsButton} onPress={getLocation}>
                 <Text style={styles.gpsButtonText}>Use GPS instead</Text>
@@ -61,53 +70,3 @@ export const HomeScreen = ({navigation}) => {
   }
 
   export default HomeScreen;
-  
-  const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#FFFFFF'
-      },
-    logo: {
-      width: 100,
-      height: 100,
-      resizeMode: 'contain',
-      marginBottom: 20
-    },
-    appName: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      marginBottom: 30
-    },
-    inputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: 20,
-      backgroundColor: '#F0F0F0',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      marginBottom: 20,
-      marginHorizontal: 20
-    },
-    input: {
-      flex: 1,
-      fontSize: 18,
-      color: '#333333'
-    },
-    icon: {
-      padding: 10
-    },
-    gpsButton: {
-      backgroundColor: '#007AFF',
-      borderRadius: 20,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      marginVertical: 20,
-    },
-    gpsButtonText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#FFFFFF'
-    }
-  });

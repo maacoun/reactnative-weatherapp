@@ -7,7 +7,8 @@ const defaultSettings = {
   units: 'metric',
   theme: 'light',
   defaultHometown: '',
-  locationServicesEnabled: true,
+  locationServicesEnabled: false,
+  locationAccuracy: "low"
 };
 
 const SettingsContext = createContext(defaultSettings);

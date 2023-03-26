@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Switch, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import {useDataContext} from "../providers/SettingsProvider";
+import * as Location from 'expo-location';
 
 const SettingsScreen = () => {
-  // const [units, setUnits] = useState('metric');
-  // const [theme, setTheme] = useState('light');
-  // const [defaultHometown, setDefaultHometown] = useState();
-  // const [locationServicesEnabled, setLocationServicesEnabled] = useState(true);
-
   const [settings, setSettings] = useDataContext();
 
+  const cancelGPSPermission = async () => {
+    await Location.hasServicesEnabledAsync();
+    try {
+      const { granted } = await Location.requestForegroundPermissionsAsync({ forceRequest: true });
+      if (!granted) {
+        alert('Location permission denied');
+      }
+    } catch (error) {
+      console.log(error);
+    }  };
+  
   const toggleLocationServices = () => {
     setSettings({
       ...settings,
       locationServicesEnabled: !settings.locationServicesEnabled,
     });
+    if (settings.locationServicesEnabled) {
+      cancelGPSPermission();
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>
        <View style={styles.section}>
         <Text style={styles.sectionTitle}>Selected unit</Text>
         <Text style={styles.sectionSubtitle}>
@@ -55,37 +67,61 @@ const SettingsScreen = () => {
           <Text>Light</Text>
         </View>
       </View>
+      {/* <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Location accuracy</Text>
+        <Text style={styles.sectionSubtitle}>
+          {settings.locationAccuracy === 'low' ? 'Low' : 'High'}
+        </Text>
+        <View style={styles.sectionRow}>
+          <Text>High</Text>
+          <Switch
+            value={settings.locationAccuracy === 'low'}
+            onValueChange={() =>
+              setSettings({
+                ...settings,
+                locationAccuracy: settings.locationAccuracy === 'low' ? 'high' : 'low',
+              })
+            }
+          />
+          <Text>Low</Text>
+        </View>
+      </View> */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Default hometown</Text>
-        <Text style={styles.sectionSubtitle}>{settings.defaultHometown}</Text>
-        <TextInput
-          style={styles.textInput}
-          value={settings.defaultHometown}
-          onChangeText={(text) =>
-            setSettings({
-              ...settings,
-              defaultHometown: text,
-            })
-          }
-        />
+        <View style={styles.sectionRow}>
+          <Text style={styles.sectionSubtitle}>{settings.defaultHometown}</Text>
+          <TextInput
+            style={styles.textInput}
+            value={settings.defaultHometown}
+            onChangeText={(text) =>
+              setSettings({
+                ...settings,
+                defaultHometown: text,
+              })
+            }
+          />
+        </View>
       </View>
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <Text style={styles.sectionTitle}>Location services</Text>
-        <Text style={styles.sectionSubtitle}>
-          {settings.locationServicesEnabled ? 'Enabled' : 'Disabled'}
-        </Text>
-        <Switch
-          value={settings.locationServicesEnabled}
-          onValueChange={toggleLocationServices}
-        />
-      </View>
-    </View>
+        <View style={styles.sectionRow}>
+          <Text style={styles.sectionSubtitle}>
+            {settings.locationServicesEnabled ? 'Enabled' : 'Disabled'}
+          </Text>
+          <Switch
+            value={settings.locationServicesEnabled}
+            onValueChange={toggleLocationServices}
+          />
+        </View>
+      </View> */}
+    </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
   },
   sectionRow: {

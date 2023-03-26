@@ -2,18 +2,25 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
+import {useDataContext} from "../providers/SettingsProvider";
 
 export const HomeScreen = ({navigation}) => {
+  const [settings, setSettings] = useDataContext();
+
   const [vstupPocasko, setVstupPocasko] = useState("")
   const [location, setLocation] = useState(null);
+  const [geocoded, setGeocoded] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-
-  //pri presmerovani se nezmeni predesla hodnota
 
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync({
       permissionForegroundExplanation: 'We need access to your location to show you the weather',
+      setSettings: {
+        ...settings,
+        locationServicesEnabled: status === 'granted' ? true : false,
+      }
     });
+    console.log(status);
     if (status !== 'granted') {
       setErrorMsg('Permission to access location was denied');
       return;
@@ -21,6 +28,9 @@ export const HomeScreen = ({navigation}) => {
 
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location);
+
+    const geocoded = await Location.reverseGeocodeAsync(location.coords);
+    setGeocoded(geocoded);
   }
 
   const handleNavigationInput = () => {
@@ -40,10 +50,8 @@ export const HomeScreen = ({navigation}) => {
             <Image source={require('../assets/thunderstorm.png')} style={styles.logo} />
             <Text style={styles.appName}>Simpleweather</Text>
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="Type in your location" value={vstupPocasko} onChangeText={text => setVstupPocasko(text)} />
-                <TouchableOpacity style={styles.icon} onPress={handleNavigationInput}>
-                <Ionicons name="search-outline" size={24} color="#AAAAAA" />
-                </TouchableOpacity>
+                <TextInput style={styles.input} placeholder="Type in your location" value={vstupPocasko} onChangeText={text => setVstupPocasko(text)} onSubmitEditing={handleNavigationInput}/>
+                <TouchableOpacity style={styles.icon} onPress={handleNavigationInput}><Ionicons name="search-outline" size={24} color="#00008B" /></TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.gpsButton} onPress={getLocation}>
                 <Text style={styles.gpsButtonText}>Use GPS instead</Text>

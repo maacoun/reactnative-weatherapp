@@ -3,14 +3,15 @@ import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet,
 import axios from "axios";
 import {ForecastCard} from "../components/ForecastCard";
 import {AlertCard} from "../components/AlertCard";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {TempViewer} from "../components/TempViewer";
 import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {useDataContext} from "../providers/SettingsProvider";
+
 
 export const WeatherScreen = ({route}) => {
-  const { weatherInput } = route.params ? route.params : { weatherInput: "Prague" };
+  const [settings, setSettings] = useDataContext();
+  const { weatherInput } = route.params ? route.params : settings.defaultHometown == "" ? {weatherInput: "Prague"} : {weatherInput: settings.defaultHometown};
 
   const [location, setLocation] = useState([]);
   const [current, setCurrent] = useState([]);
@@ -72,97 +73,125 @@ export const WeatherScreen = ({route}) => {
   return (
     <ScrollView vertical={true} contentContainerStyle={styles.container}>
       <View style={styles.centre}>
-        <Text style={styles.place}>{location.name}</Text>
-        <View style={styles.tempdiv}>
-          <Text style={styles.temperature}>{current.temp_c}°C</Text>
-          <Text style={styles.text}>Feels Like: {current.feelslike_c}°C</Text>
-          <Text style={styles.text}>{forecast.day.mintemp_c}°C/{forecast.day.maxtemp_c}°C</Text>
-        </View>
-        <Image source={{ uri: 'https:' + current.condition.icon.substring(2) }} style={styles.pictogram} />
-        <Text style={styles.description}>{current.condition.text}</Text>
-        <Text style={styles.date}>{moment(current.last_updated).format('DD.MM.YYYY HH:mm')}</Text>
-        <View style={styles.separator} />
-        <View style={styles.others}>
-          <Text style={styles.text}>
-            Humidity <Ionicons name="water-outline" style={styles.ionicon}/>: {current.humidity}% 
-          </Text>
-          <Text style={styles.text}>
-            Wind <Ionicons name="leaf-outline" style={styles.ionicon}/>: {current.wind_kph}km/h  
-          </Text>
-          <Text style={styles.text}>Last Updated: {moment(current.last_updated).format('HH:mm')}</Text>
+        <View style={styles.wrappingPanel}>
+          <Text style={styles.place}>{location.name}</Text>
+          <TempViewer current={current} forecast={forecast} />
+          <Image source={{ uri: 'https:' + current.condition.icon.substring(2) }} style={styles.pictogram} />
+          <Text style={styles.description}>{current.condition.text}</Text>
+          <Text style={styles.time}>Last Updated: {moment(current.last_updated).format('HH:mm')}</Text>
+          <View style={styles.buttons}>
+            {settings.defaultHometown == "" && settings.defaultHometown != location.name ? (
+              <TouchableOpacity style={styles.button} onPress={() => setSettings({...settings, defaultHometown: location.name})}>
+                <Text style={styles.buttonText}>Set as default</Text>
+              </TouchableOpacity>
+            ) : null}
+            {settings.defaultHometown != "" && settings.defaultHometown != location.name ? (
+              <TouchableOpacity style={styles.button} onPress={() => setLocation({name: settings.defaultHometown})}>
+                <Text style={styles.buttonText}>Show default</Text>
+              </TouchableOpacity>
+            ) : null}
+            <TouchableOpacity style={styles.button} onPress={() => fetchWeatherData()}>
+              <Text style={styles.buttonText}>Refresh</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.separator} />
+          <View style={styles.others}>
+            <Text style={styles.text}>
+              Humidity <Ionicons name="water-outline" style={styles.ionicon}/>: {current.humidity}% 
+            </Text>
+            <Text style={styles.text}>
+              {settings.units == "metric" ? "Wind Speed" : "Wind Speed (mph)"} <Ionicons name="speedometer-outline" style={styles.ionicon}/>: {current.wind_kph} {settings.units == "metric" ? "km/h" : "mph"}
+            </Text>
+            <Text style={styles.text}>UV: {current.uv}</Text>
+          </View>
+          <View style={styles.separator} />
         </View>
       </View>
       <View style={styles.astro}>
-        <View style={styles.separator} />
-        <Text style={styles.description}>Sunrise and Sunset</Text>
-        <Text style={styles.text}>
-          Sunrise <FontAwesomeIcon name="sun-o" style={styles.ionicon}/>: {forecast.astro.sunrise}
-        </Text>
-        <Text style={styles.text}>
-          Sunset <FontAwesomeIcon name="moon-o" style={styles.ionicon}/>: {forecast.astro.sunset}
-        </Text>
-        <Text style={styles.description}>Moon</Text>
-        <Text style={styles.text}>
-          Moonrise <FontAwesomeIcon name="moon-o" style={styles.ionicon}/>: {forecast.astro.moonrise}
-        </Text>
-        <Text style={styles.text}>
-          Moonset <FontAwesomeIcon name="moon-o" style={styles.ionicon}/>: {forecast.astro.moonset}
-        </Text>
-        <Text style={styles.text}>
-          Moon Phase <FontAwesomeIcon name="moon-o" style={styles.ionicon}/>: {forecast.astro.moon_phase}
-        </Text>
-        <Text style={styles.text}>
-          Moon Illumination <FontAwesomeIcon name="moon-o" style={styles.ionicon}/>: {forecast.astro.moon_illumination}%
-        </Text>
-        <View style={styles.separator} />
-      </View>
-      <View style={styles.airquality}>
-        <Text style={styles.description}>Air Quality</Text>
-          <View style={styles.airqualityvalues}>
-            <Text style={styles.text}>
-              PM10: {current.air_quality.pm10.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
-              PM2.5: {current.air_quality.pm2_5.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
-              NO2: {current.air_quality.no2.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
-              O3: {current.air_quality.o3.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
-              SO2: {current.air_quality.so2.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
-              CO: {current.air_quality.co.toFixed(2)}
-            </Text>
+        <View style={styles.wrappingPanel}>
+          <Text style={styles.description}>Sunrise and Sunset</Text>
+          <Text style={styles.text}>
+            Sunrise <Ionicons name="sunny-outline" style={styles.ionicon}/>: {forecast.astro.sunrise}
+          </Text>
+          <Text style={styles.text}>
+            Sunset <Ionicons name="moon-outline" style={styles.ionicon}/>: {forecast.astro.sunset}
+          </Text>
+          <Text style={styles.description}>Moon</Text>
+          <Text style={styles.text}>
+            Moonrise <Ionicons name="moon-outline" style={styles.ionicon}/>: {forecast.astro.moonrise}
+          </Text>
+          <Text style={styles.text}>
+            Moonset <Ionicons name="moon-outline" style={styles.ionicon}/>: {forecast.astro.moonset}
+          </Text>
+          <Text style={styles.text}>
+            Moon Phase <Ionicons name="moon-outline" style={styles.ionicon}/>: {forecast.astro.moon_phase}
+          </Text>
+          <Text style={styles.text}>
+            Moon Illumination <Ionicons name="moon-outline" style={styles.ionicon}/>: {forecast.astro.moon_illumination}%
+          </Text>
+          <View style={styles.separator} />
           </View>
-        <View style={styles.separator} />
+        </View>
+      <View style={styles.airquality}>
+        <View style={styles.wrappingPanel}>
+          <Text style={styles.description}>Air Quality</Text>
+            <View style={styles.airqualityvalues}>
+              <Text style={styles.text}>
+                PM10: {current.air_quality.pm10.toFixed(1)}
+              </Text>
+              <Text style={styles.text}>
+                PM2.5: {current.air_quality.pm2_5.toFixed(1)}
+              </Text>
+              <Text style={styles.text}>
+                NO2: {current.air_quality.no2.toFixed(1)}
+              </Text>
+              <Text style={styles.text}>
+                O3: {current.air_quality.o3.toFixed(1)}
+              </Text>
+              <Text style={styles.text}>
+                SO2: {current.air_quality.so2.toFixed(1)}
+              </Text>
+              <Text style={styles.text}>
+                CO: {current.air_quality.co.toFixed(1)}
+              </Text>
+            </View>
+          <View style={styles.separator} />
+        </View>
       </View>
 
       {alerts.alert && alerts.alert.length > 0 ? (
         <View style={styles.alerts}>
-          <Text style={styles.description}>Alerts</Text>
-          {alerts.alert.map((alert, index) => (
-            <AlertCard key={index} alert={alert} />
-          ))}
-          <View style={styles.separator} />
+          <View style={styles.wrappingPanel}>
+            <Text style={styles.description}>
+              Alerts <Ionicons name="warning-outline" style={styles.ionicon}/>
+            </Text>
+            {alerts.alert.map((alert, index) => (
+              <AlertCard key={index} alert={alert} />
+            ))}
+            <View style={styles.separator} />
+          </View>
         </View>
       ) : (
         <View style={styles.alerts}>
-          <Text style={styles.description}>No Alerts</Text>
-          <View style={styles.separator} />
+          <View style={styles.wrappingPanel}>
+            <Text style={styles.description}>
+              Alerts
+            </Text>
+            <Text style={styles.text}>No alerts <Ionicons name="beer-outline" style={styles.ionicon}/> </Text>
+            <View style={styles.separator} />
+          </View>
         </View>
       )}
 
       <View style={styles.bottom}>
+      <View style={styles.wrappingPanel}>
         <Text style={styles.description}>Forecast</Text>
-        <ScrollView horizontal={true}>
-          {forecast.hour.map((forecast, index) => (
-            <ForecastCard key={index} forecast={forecast} />
-          ))}
-        </ScrollView>
+          <ScrollView horizontal={true}>
+            {forecast.hour.map((forecast, index) => (
+              <ForecastCard key={index} forecast={forecast} />
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </ScrollView>
   );
@@ -201,6 +230,9 @@ const styles = StyleSheet.create({
   },
   bottom : {
     //backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   pictogram: {
     width: 100,
@@ -218,13 +250,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  temperature: {
-    fontSize: 64,
-    fontWeight: 'bold',
-  },
   text: {
     fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 5,
   },
   separator: {
@@ -236,10 +263,9 @@ const styles = StyleSheet.create({
   },
   ionicon: {
     fontSize: 16,
-    color: 'black',
-    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  date: {
+  time: {
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -259,6 +285,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '75%',
     flexWrap: 'wrap',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '75%',
+    flexWrap: 'wrap',
+  },
+  button: {
+    backgroundColor: '#1E90FF',
+    padding: 10,
+    borderRadius: 10,
+    margin: 5,
+  },
+  wrappingPanel: {
+    width: '95%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    margin: 5,
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  wrappingPanelText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

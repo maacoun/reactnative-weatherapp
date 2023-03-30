@@ -32,11 +32,11 @@ const Root = () => {
         initialRouteName="Home"
         screenOptions={({ route }) => ({
           headerStyle: {
-            backgroundColor: settings.theme === "dark" ? "#252525" : "cccccc",
+            backgroundColor: settings.theme === "dark" ? "#252525" : "#DED7FB",
           },
           headerTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",
           tabBarStyle: {
-            backgroundColor: settings.theme === "dark" ? "#252525" : "cccccc",
+            backgroundColor: settings.theme === "dark" ? "#252525" : "#cccccc",
           },
           tabBarActiveTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",
           tabBarInactiveTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",

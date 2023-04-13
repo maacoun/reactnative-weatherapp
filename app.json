@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/cloudy.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#e5e5f0"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/cloudy.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#e5e5f0"
       },
       "permissions": []
     },

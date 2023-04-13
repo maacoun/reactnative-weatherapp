@@ -216,7 +216,7 @@ const lightTheme = StyleSheet.create({
   sectionTextInput: {
     fontSize: 16,
     color: colors.text,
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.accent,
     borderRadius: 10,
     padding: 10,
     width: 100,

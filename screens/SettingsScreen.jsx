@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Switch, StyleSheet, TextInput, KeyboardAvoidingView, Platform, Button,TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {useDataContext} from "../providers/SettingsProvider";
 import * as Location from 'expo-location';
@@ -9,8 +9,7 @@ import darkTheme from '../styles/darkTheme';
 const SettingsScreen = () => {
   const [settings, setSettings] = useDataContext();
   const styles = settings.theme === 'light' ? lightTheme : darkTheme;
-  const [{ illuminance }, setData] = useState({ illuminance: 0 });
-
+  const [hometown, setHometown] = useState(settings.defaultHometown);
 
   const cancelGPSPermission = async () => {
     await Location.hasServicesEnabledAsync();
@@ -33,6 +32,14 @@ const SettingsScreen = () => {
     }
   };
 
+  const handleHometownChange = () => {
+    setSettings({
+      ...settings,
+      defaultHometown: hometown,
+    });
+    setHometown('');
+  };
+
   return (
     <ScrollView style={styles.settingsScreenContainer}>
       <View style={styles.section}>
@@ -40,15 +47,14 @@ const SettingsScreen = () => {
         <View style={styles.sectionRow}>
           <Text style={styles.sectionSubtitle}>{settings.defaultHometown}</Text>
           <TextInput
-            style={styles.sectionTextInput}
-            value={settings.defaultHometown}
-            onChangeText={(text) =>
-              setSettings({
-                ...settings,
-                defaultHometown: text,
-              })
-            }
+            style={styles.sectionSubtitle}
+            onChangeText={setHometown}
+            value={hometown}
+            placeholder='Enter a new hometown'
           />
+          <TouchableOpacity onPress={handleHometownChange} style={styles.button}>
+            <Text style={styles.buttonText}>Change</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={100}>

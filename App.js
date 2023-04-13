@@ -51,14 +51,14 @@ const Root = () => {
         initialRouteName="Home"
         screenOptions={({ route }) => ({
           headerStyle: {
-            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#d8d8eb",
+            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#e5e5f0",
           },
-          headerTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
+          headerTintColor: settings.theme === "dark" ? "#e5e5f0" : "#1e1e1e",
           tabBarStyle: {
-            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#d8d8eb",
+            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#e5e5f0",
           },
-          tabBarActiveTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
-          tabBarInactiveTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
+          tabBarActiveTintColor: settings.theme === "dark" ? "#e5e5f0" : "#1e1e1e",
+          tabBarInactiveTintColor: settings.theme === "dark" ? "#e5e5f0" : "#1e1e1e",
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             if (route.name === SCREEN_HOME) {
@@ -76,7 +76,7 @@ const Root = () => {
       >
         <Tab.Screen name={SCREEN_HOME} component={Home} />
         <Tab.Screen name={SCREEN_WEATHER} component={Weather} />
-        <Tab.Screen name={SCREEN_ANALYTICS} component={Analytics} />
+        {/* <Tab.Screen name={SCREEN_ANALYTICS} component={Analytics} /> */}
         <Tab.Screen name={SCREEN_SETTINGS} component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>

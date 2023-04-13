@@ -57,9 +57,16 @@ export const HomeScreen = ({navigation}) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={require('../assets/thunderstorm.png')} style={styles.logo} />
-            <Text style={styles.appName}>Simpleweather</Text>
+            <Text style={styles.appName}>Skywatch</Text>
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="Type in your location" value={vstupPocasko} onChangeText={text => setVstupPocasko(text)} onSubmitEditing={handleNavigationInput}/>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Type in your location" 
+                  placeholderTextColor =  {settings.theme === 'light' ? "#d4d4d5" : "#d8d8eb"}
+                  value={vstupPocasko} 
+                  onChangeText={text => setVstupPocasko(text)} 
+                  onSubmitEditing={handleNavigationInput}
+                />
                 <TouchableOpacity onPress={handleNavigationInput}><Ionicons name="search-outline" size={24} style={styles.inputContainerIcon} /></TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.gpsButton} onPress={getLocation}>

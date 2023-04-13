@@ -23,9 +23,9 @@ export const AlertCard = ({alert}) => {
     return (
       <View style={styles.alert}>
         <Text style={styles.headline}>{alert.headline}</Text>
-        <Text style={styles.alertText}>{alert.category}</Text>
-        <Text style={styles.alertText}>{moment(alert.effective).format('DD.MM.YYYY')}</Text>
-        <Text style={styles.alertText}>{moment(alert.expires).format('DD.MM.YYYY')}</Text>
+        <Text style={styles.alertText}>Category: {alert.category}</Text>
+        <Text style={styles.alertText}>From: {moment(alert.effective).format('DD.MM.YYYY')}</Text>
+        <Text style={styles.alertText}>To: {moment(alert.expires).format('DD.MM.YYYY')}</Text>
         <Text style={styles.alertText}>{alert.desc}</Text>
       </View>
     );

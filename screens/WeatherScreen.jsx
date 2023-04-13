@@ -12,7 +12,7 @@ import darkTheme from '../styles/darkTheme';
 
 export const WeatherScreen = ({route}) => {
   const [settings, setSettings] = useDataContext();
-  const { weatherInput } = route.params ? route.params : settings.defaultHometown == "" ? {weatherInput: "Prague"} : {weatherInput: settings.defaultHometown};
+  const { weatherInput } = route.params || (settings.defaultHometown ? { weatherInput: settings.defaultHometown } : { weatherInput: "Prague" });
 
   const [location, setLocation] = useState([]);
   const [current, setCurrent] = useState([]);
@@ -62,6 +62,7 @@ export const WeatherScreen = ({route}) => {
   };
   
   useEffect(() => {
+    console.log(`http://api.weatherapi.com/v1/forecast.json?key=${apikey}&q=${weatherInput}&days=1&aqi=yes&alerts=yes`);
     fetchWeatherData();
   }, [weatherInput]);
 

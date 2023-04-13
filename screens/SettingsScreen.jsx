@@ -9,6 +9,8 @@ import darkTheme from '../styles/darkTheme';
 const SettingsScreen = () => {
   const [settings, setSettings] = useDataContext();
   const styles = settings.theme === 'light' ? lightTheme : darkTheme;
+  const [{ illuminance }, setData] = useState({ illuminance: 0 });
+
 
   const cancelGPSPermission = async () => {
     await Location.hasServicesEnabledAsync();
@@ -101,6 +103,21 @@ const SettingsScreen = () => {
               }
             />
             <Text style={styles.sectionSmallText}>Yes</Text>
+          </View>
+          <View style={styles.section}>
+            <View style={styles.sectionRow}>
+              {/* <Text style={styles.sectionSmallText}>Use light sensor to automatically switch between light and dark theme</Text> */}
+              <Text style={styles.sectionSmallText}>
+                {settings.useLightSensor && (
+                  <>
+                    {Platform.OS === "android"
+                      ? `Light sensor is on`
+                      : `Only available on Android`}
+                  </>
+                )}
+                {!settings.useLightSensor && <>Light Sensor is disabled in settings</>}
+              </Text>
+            </View>
           </View>
         </View>
         {/* <View style={styles.section}>

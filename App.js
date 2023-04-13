@@ -2,7 +2,8 @@ import { NavigationContainer, DefaultTheme, DarkTheme, } from '@react-navigation
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SettingsProvider, {useDataContext} from './providers/SettingsProvider';
-import React from 'react';
+import React, { useState, useEffect, Text } from 'react';
+import { LightSensor } from "expo-sensors";
 
 // SCREENS
 import Home from "./screens/HomeScreen";
@@ -26,20 +27,38 @@ export default function App() {
 
 const Root = () => {
   const [settings, setSettings] = useDataContext();
+  const [{ illuminance }, setData] = useState({ illuminance: 0 });
+
+  // useEffect(() => {
+  //   const subscription = LightSensor.addListener((data) => {
+  //     setData(data);
+  //   });
+  //   return () => subscription.remove();
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(illuminance);
+  //   if (illuminance < 100) {
+  //     setSettings({ theme: "dark" });
+  //   } else {
+  //     setSettings({ theme: "light" });
+  //   }
+  // }, [illuminance]);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Home"
         screenOptions={({ route }) => ({
           headerStyle: {
-            backgroundColor: settings.theme === "dark" ? "#252525" : "#DED7FB",
+            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#d8d8eb",
           },
-          headerTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",
+          headerTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
           tabBarStyle: {
-            backgroundColor: settings.theme === "dark" ? "#252525" : "#cccccc",
+            backgroundColor: settings.theme === "dark" ? "#1e1e1e" : "#d8d8eb",
           },
-          tabBarActiveTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",
-          tabBarInactiveTintColor: settings.theme === "dark" ? "#cccccc" : "#252525",
+          tabBarActiveTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
+          tabBarInactiveTintColor: settings.theme === "dark" ? "#d8d8eb" : "#1e1e1e",
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
             if (route.name === SCREEN_HOME) {

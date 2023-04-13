@@ -49,7 +49,7 @@ const darkTheme = StyleSheet.create({
     color: colors.primary,
   },
   gpsButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,

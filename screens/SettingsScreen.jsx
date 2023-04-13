@@ -47,7 +47,7 @@ const SettingsScreen = () => {
         <View style={styles.sectionRow}>
           <Text style={styles.sectionSubtitle}>{settings.defaultHometown}</Text>
           <TextInput
-            style={styles.sectionSubtitle}
+            style={styles.text}
             onChangeText={setHometown}
             value={hometown}
             placeholder='Enter a new hometown'

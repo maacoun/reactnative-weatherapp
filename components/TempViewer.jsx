@@ -13,17 +13,17 @@ export const TempViewer = ({current, forecast}) => {
     if (settings.units === "metric") {
         return (
             <View style={styles.tempdiv}>
-                <Text style={styles.temperature}>{current.temp_c}°C</Text>
-                <Text style={styles.text}>Feels Like: {current.feelslike_c}°C</Text>
-                <Text style={styles.text}>{forecast.day.mintemp_c}°C/{forecast.day.maxtemp_c}°C</Text>
+                <Text style={styles.temperature}>{Math.round(current.temp_c)}°C</Text>
+                <Text style={styles.text}>Feels Like: {Math.round(current.feelslike_c)}°C</Text>
+                <Text style={styles.text}>{Math.round(forecast.day.mintemp_c)}°C/{forecast.day.maxtemp_c}°C</Text>
             </View>
         );
     } else {
         return (
             <View style={styles.tempdiv}>
-                <Text style={styles.temperature}>{current.temp_f}°F</Text>
-                <Text style={styles.text}>Feels Like: {current.feelslike_f}°F</Text>
-                <Text style={styles.text}>{forecast.day.mintemp_f}°F/{forecast.day.maxtemp_f}°F</Text>
+                <Text style={styles.temperature}>{Math.round(current.temp_f)}°F</Text>
+                <Text style={styles.text}>Feels Like: {Math.round(current.feelslike_f)}°F</Text>
+                <Text style={styles.text}>{Math.round(forecast.day.mintemp_f)}°F/{forecast.day.maxtemp_f}°F</Text>
             </View>
         );
     }

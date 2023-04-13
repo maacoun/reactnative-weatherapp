@@ -10,7 +10,6 @@ export const AlertCard = ({alert}) => {
   const [settings, setSettings] = useDataContext();
   const styles = settings.theme === 'light' ? lightTheme : darkTheme;
 
-  console.log(alert);
   //if alerts is empty, return view with no alerts
   if (alert == null) {
     return (

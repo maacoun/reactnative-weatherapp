@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import axios from "axios";
 import {ForecastCard} from "../components/ForecastCard";
 import {AlertCard} from "../components/AlertCard";
@@ -22,7 +22,6 @@ export const WeatherScreen = ({route}) => {
   const [loading, setLoading] = useState(true);
   
   const styles = settings.theme === 'light' ? lightTheme : darkTheme;
-  console.log(styles);
 
   const apikey = "dc501297718e46d6b1593532232403";
 
@@ -51,18 +50,24 @@ export const WeatherScreen = ({route}) => {
 
       if (response.data.alerts) {
         setAlerts(response.data.alerts);
-        console.log(response.data.alerts);
+        //console.log(response.data.alerts);
       }
 
       setLoading(false); // Set loading to false once data is loaded
     } catch (error) {
       console.error(error);
       setLoading(false); // Set loading to false in case of error
+      Alert.alert(
+        "Error",
+        "Sorry, but an error occured while fetching weather data. Did you enter the name of your place in the correct format? Please enter an English name or a name without diacritics.",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
     }
   };
   
   useEffect(() => {
-    console.log(`http://api.weatherapi.com/v1/forecast.json?key=${apikey}&q=${weatherInput}&days=1&aqi=yes&alerts=yes`);
     fetchWeatherData();
   }, [weatherInput]);
 

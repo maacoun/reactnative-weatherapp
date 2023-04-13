@@ -40,7 +40,8 @@ export const HomeScreen = ({navigation}) => {
 
   const handleNavigationInput = () => {
     console.log(vstupPocasko);
-    navigation.navigate("Weather", { weatherInput: vstupPocasko })
+    navigation.navigate("Weather", { weatherInput: vstupPocasko });
+    setVstupPocasko("");
   }
 
   useEffect(() => {

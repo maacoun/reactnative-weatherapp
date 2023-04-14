@@ -22,10 +22,16 @@
         "foregroundImage": "./assets/cloudy.png",
         "backgroundColor": "#e5e5f0"
       },
-      "permissions": []
+      "permissions": [],
+      "package": "com.vlamaco019.rnsimpleweather"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9264c532-ce26-4d14-892c-642136336b37"
+      }
     }
   }
 }
